@@ -49,11 +49,13 @@ jobs:
       - name: Download Skia
         shell: bash
         run: |
-          set -euxo pipefail
+          set -exo pipefail
 
           this_dir=$(cygpath "${{ github.workspace }}")
 
-          skia_url=$(source "$this_dir/laf/misc/skia-url.sh" release windows x64 | xargs)
+          # source ではなく別bashプロセスとして実行する
+          # skia-url.sh は nounset (-u) と互換性がないため -u は使わない
+          skia_url=$(bash "$this_dir/laf/misc/skia-url.sh" release windows x64 | xargs)
           skia_file=$(basename "$skia_url")
 
           echo "Skia URL: $skia_url"
